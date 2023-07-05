@@ -43,9 +43,9 @@ namespace EDriveRent.Models
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentNullException(ExceptionMessages.FirstNameNull);
+                    throw new ArgumentNullException(ExceptionMessages.LastNameNull);
                 }
-                firstName = value;
+                lastName = value;
             }
         }
 
@@ -60,7 +60,7 @@ namespace EDriveRent.Models
                 {
                     throw new ArgumentNullException(ExceptionMessages.LicenceNumberRequired);
                 }
-                firstName = value;
+                drivingLicenceNumber = value;
             }
         }
 

@@ -8,11 +8,21 @@ using System.Threading.Tasks;
 
 namespace EDriveRent.Models
 {
-    public class Vehicle : IVehicle
+    public abstract class Vehicle : IVehicle
     {
         private string brand;
         private string model;
         private string licensePlateNumber;
+
+        public Vehicle(string brand, string model, double maxMileage, string licensePlateNumber)
+        {
+            Brand = brand;
+            Model = model;
+            MaxMileage = maxMileage;
+            LicensePlateNumber = licensePlateNumber;
+            BatteryLevel = 100;
+            IsDamaged = false;
+        }
         public string Brand
         {
             get => brand;
@@ -55,21 +65,39 @@ namespace EDriveRent.Models
 
         public int BatteryLevel { get; private set; }
 
-        public bool IsDamaged => throw new NotImplementedException();
+        public bool IsDamaged { get; private set; }
 
         public void ChangeStatus()
         {
-            throw new NotImplementedException();
+            if (IsDamaged)
+            {
+                IsDamaged = false;
+            }
+            else
+            {
+                IsDamaged = true;
+            }
         }
 
         public void Drive(double mileage)
         {
-            throw new NotImplementedException();
+            double percentage = Math.Round((mileage / MaxMileage) * 100);
+
+            if (Model == "CargoVan")
+            {
+                percentage += 5;
+            }
+            BatteryLevel -= (int) percentage;
         }
 
         public void Recharge()
         {
-            throw new NotImplementedException();
+            BatteryLevel = 100;
+        }
+
+        public override string ToString()
+        {
+            return $"{Brand} {Model} License plate: {LicensePlateNumber} Battery: {BatteryLevel}% Status: OK/damaged";
         }
     }
 }
