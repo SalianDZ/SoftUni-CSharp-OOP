@@ -11,10 +11,22 @@ namespace EDriveRent.Models
     public class User : IUser
     {
         private string firstName;
+        private string lastName;
+        private string drivingLicenceNumber;
+
+        public User(string firstName, string lastName, string drivingLicenceNumber)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            DrivingLicenseNumber = drivingLicenceNumber;
+            Rating = 0;
+            IsBlocked = false;
+        }
+
         public string FirstName
         {
             get => firstName;
-            set
+            private set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
@@ -24,22 +36,59 @@ namespace EDriveRent.Models
             }
         }
 
-        public string LastName => throw new NotImplementedException();
+        public string LastName
+        {
+            get => lastName;
+            private set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentNullException(ExceptionMessages.FirstNameNull);
+                }
+                firstName = value;
+            }
+        }
 
-        public double Rating => throw new NotImplementedException();
+        public double Rating { get; private set; }
 
-        public string DrivingLicenseNumber => throw new NotImplementedException();
+        public string DrivingLicenseNumber
+        {
+            get => drivingLicenceNumber;
+            private set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentNullException(ExceptionMessages.LicenceNumberRequired);
+                }
+                firstName = value;
+            }
+        }
 
-        public bool IsBlocked => throw new NotImplementedException();
+        public bool IsBlocked { get; private set; }
 
         public void DecreaseRating()
         {
-            throw new NotImplementedException();
+            Rating -= 2;
+
+            if (Rating < 0.0)
+            {
+                Rating = 0;
+            }
         }
 
         public void IncreaseRating()
         {
-            throw new NotImplementedException();
+            Rating += 0.5;
+
+            if (Rating > 10)
+            {
+                Rating = 10;
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName} Driving license: {DrivingLicenseNumber} Rating: {Rating}";
         }
     }
 }
