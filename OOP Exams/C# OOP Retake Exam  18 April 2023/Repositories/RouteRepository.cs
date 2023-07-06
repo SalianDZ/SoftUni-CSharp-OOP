@@ -11,7 +11,9 @@ namespace EDriveRent.Repositories
 {
     public class RouteRepository : IRepository<IRoute>
     {
-        private List<IRoute> routes;
+        private List<IRoute> routes = new();
+
+        public int Count { get => routes.Count; }
         public void AddModel(IRoute model)
         {
             routes.Add(model);

@@ -73,6 +73,7 @@ namespace EDriveRent.Models
             if (Rating < 0.0)
             {
                 Rating = 0;
+                IsBlocked = true;
             }
         }
 

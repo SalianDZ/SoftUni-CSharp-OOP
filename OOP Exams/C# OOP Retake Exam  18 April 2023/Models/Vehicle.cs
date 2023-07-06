@@ -63,7 +63,7 @@ namespace EDriveRent.Models
             }
         }
 
-        public int BatteryLevel { get; private set; }
+        public int BatteryLevel { get;private set; }
 
         public bool IsDamaged { get; private set; }
 
@@ -97,7 +97,14 @@ namespace EDriveRent.Models
 
         public override string ToString()
         {
-            return $"{Brand} {Model} License plate: {LicensePlateNumber} Battery: {BatteryLevel}% Status: OK/damaged";
+            if (IsDamaged)
+            {
+                return $"{Brand} {Model} License plate: {LicensePlateNumber} Battery: {BatteryLevel}% Status: damaged";
+            }
+            else
+            {
+                return $"{Brand} {Model} License plate: {LicensePlateNumber} Battery: {BatteryLevel}% Status: OK";
+            }
         }
     }
 }
