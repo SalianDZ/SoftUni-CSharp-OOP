@@ -3,6 +3,7 @@ using RobotService.Repositories.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,6 +36,7 @@ namespace RobotService.Repositories
         {
             if (supplements.Any(x => x.GetType().Name == typeName))
             {
+                supplements.Remove(supplements.FirstOrDefault(x => x.GetType().Name == typeName));
                 return true;
             }
 
