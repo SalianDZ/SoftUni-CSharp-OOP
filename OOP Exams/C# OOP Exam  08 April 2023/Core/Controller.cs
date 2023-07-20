@@ -125,7 +125,7 @@ namespace RobotService.Core
         public string RobotRecovery(string model, int minutes)
         {
             List<IRobot> wantedRobots = robots.Models()
-                    .Where(x => x.Model == model && x.BatteryLevel < 50)
+                    .Where(x => x.Model == model && x.BatteryLevel < x.BatteryCapacity/ 2)
                     .ToList();
             int counter = 0;
 

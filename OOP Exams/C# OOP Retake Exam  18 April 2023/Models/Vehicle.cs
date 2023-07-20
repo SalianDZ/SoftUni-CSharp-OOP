@@ -83,7 +83,7 @@ namespace EDriveRent.Models
         {
             double percentage = Math.Round((mileage / MaxMileage) * 100);
 
-            if (Model == "CargoVan")
+            if (GetType().Name == "CargoVan")
             {
                 percentage += 5;
             }
