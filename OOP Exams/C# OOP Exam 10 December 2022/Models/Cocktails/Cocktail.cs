@@ -30,7 +30,7 @@ namespace ChristmasPastryShop.Models.Cocktails
             }
         }
 
-        public string Size { get; private set; } // this can be a problem
+        public string Size { get; private set; }
 
         public double Price
         {

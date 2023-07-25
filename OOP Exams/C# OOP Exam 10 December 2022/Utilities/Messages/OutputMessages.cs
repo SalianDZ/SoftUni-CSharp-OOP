@@ -22,7 +22,7 @@
 
         public const string SuccessfullyOrdered = "Booth {0} ordered {1} {2}!";
 
-        public const string GetBill = "Bill {0} lv";
+        public const string GetBill = "Bill {0:f2} lv";
 
         public const string BoothIsAvailable = "Booth {0} is now available!";
 

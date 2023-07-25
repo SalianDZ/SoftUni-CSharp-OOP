@@ -6,6 +6,7 @@ using System;
 using ChristmasPastryShop.Utilities.Messages;
 using System.Text;
 using ChristmasPastryShop.Repositories;
+using ChristmasPastryShop.Models.Cocktails;
 
 namespace ChristmasPastryShop.Models.Booths
 {
@@ -82,12 +83,12 @@ namespace ChristmasPastryShop.Models.Booths
             sb.AppendLine("-Cocktail menu:");
             foreach (var cocktail in CocktailMenu.Models)
             {
-                sb.AppendLine(cocktail.ToString());
+                sb.AppendLine($"--{cocktail.ToString()}");
             }
             sb.AppendLine("-Delicacy menu:");
             foreach (var delicacy in DelicacyMenu.Models)
             {
-                sb.AppendLine(delicacy.ToString());
+                sb.AppendLine($"--{delicacy.ToString()}");
             }
             return sb.ToString().TrimEnd();
         }
