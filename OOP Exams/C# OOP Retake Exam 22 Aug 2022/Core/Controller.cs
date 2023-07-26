@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace BookingApp.Core
 {
@@ -36,45 +37,69 @@ namespace BookingApp.Core
 
         public string BookAvailableRoom(int adults, int children, int duration, int category)
         {
-            List<IHotel> wantedHotels = hotels.All().ToList();
+            List<IHotel> wantedHotels = hotels.All().Where(x => x.Category == category).OrderBy(x => x.FullName).ToList();
             string result;
-            if (!wantedHotels.Any(x => x.Category == category))
+            if (wantedHotels.Count == 0)
             {
                 result = String.Format(OutputMessages.CategoryInvalid, category);
                 throw new ArgumentException(result);
             }
 
-            bool hasFreeSpace = false;
-            foreach (var hotel in wantedHotels.Where(x => x.Category == category))
+            List<IRoom> wantedRooms = new();
+
+            foreach (var hotel in wantedHotels)
             {
-                if (hotel.Rooms.All().Any(x => x.BedCapacity >= adults + children))
+                foreach (var currentRoom in hotel.Rooms.All().Where(x => x.PricePerNight > 0 && x.BedCapacity >= children + adults))
                 {
-                    hasFreeSpace = true;
+                    wantedRooms.Add(currentRoom);
                 }
             }
 
-            if (!hasFreeSpace)
+            IRoom room = wantedRooms.OrderBy(x => x.BedCapacity).FirstOrDefault();
+
+            if (room == null)
             {
-                result = OutputMessages.RoomNotAppropriate;
+                result = String.Format(OutputMessages.RoomNotAppropriate);
                 throw new ArgumentException(result);
             }
 
-
-
-            //room is null
-            IRoom room = hotels.All().OrderBy(x => x.FullName).FirstOrDefault(x => x.Category == category) 
-            .Rooms.All().Where(x => x.PricePerNight > 0).OrderBy(x => x.BedCapacity).FirstOrDefault();
             IHotel wantedHotel = hotels.All().Where(x => x.Rooms.All().Contains(room)).FirstOrDefault();
             Booking booking = new Booking(room, duration, adults, children, wantedHotel.Bookings.All().Count + 1);
             wantedHotel.Bookings.AddNew(booking);
             result = String.Format(OutputMessages.BookingSuccessful, wantedHotel.Bookings.All().Count, wantedHotel.FullName);
             return result;
-        }
+        } // done
 
         public string HotelReport(string hotelName)
         {
-            throw new NotImplementedException();
-        }
+            string result;
+            IHotel hotel = hotels.All().FirstOrDefault(x => x.FullName == hotelName);
+            if (hotel == null)
+            {
+                result = String.Format(OutputMessages.HotelNameInvalid, hotelName);
+                throw new ArgumentException(result);
+            }
+
+            StringBuilder sb = new();
+            sb.AppendLine($"Hotel name: {hotelName}");
+            sb.AppendLine($"--{hotel.Category} star hotel");
+            sb.AppendLine($"--Turnover: {hotel.Turnover:F2} $");
+            sb.AppendLine($"--Bookings:");
+            sb.AppendLine();
+            if (hotel.Bookings.All().Count == 0)
+            {
+                sb.AppendLine("none");
+            }
+            else
+            {
+                foreach (var booking in hotel.Bookings.All())
+                {
+                    sb.AppendLine(booking.BookingSummary());
+                    sb.AppendLine();
+                }
+            }
+            return sb.ToString().TrimEnd();
+        } 
 
         public string SetRoomPrices(string hotelName, string roomTypeName, double price)
         {
