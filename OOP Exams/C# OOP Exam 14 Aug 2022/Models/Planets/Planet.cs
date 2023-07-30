@@ -1,6 +1,7 @@
 ﻿using PlanetWars.Models.MilitaryUnits;
 using PlanetWars.Models.MilitaryUnits.Contracts;
 using PlanetWars.Models.Planets.Contracts;
+using PlanetWars.Models.Weapons;
 using PlanetWars.Models.Weapons.Contracts;
 using PlanetWars.Repositories;
 using PlanetWars.Utilities.Messages;
@@ -18,12 +19,10 @@ namespace PlanetWars.Models.Planets
         private WeaponRepository weapons;
         private string name;
         private double budget;
-        private double militaryPower;
         public Planet(string name, double budget)
         {
             Name = name;
             Budget = budget;
-            MilitaryPower = MilitaryPower;
             units = new UnitRepository();
             weapons = new WeaponRepository();
         }
@@ -55,14 +54,8 @@ namespace PlanetWars.Models.Planets
             }
         }
 
-        public double MilitaryPower
-        {
-            get => militaryPower;
-            private set
-            {
-                militaryPower = CalculateMilitaryPower();
-            }
-        }
+        public double MilitaryPower => Math.Round(this.CalculateMilitaryPower(), 3);
+
 
         public IReadOnlyCollection<IMilitaryUnit> Army => units.Models;
 
@@ -83,24 +76,50 @@ namespace PlanetWars.Models.Planets
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Planet: {Name}");
             sb.AppendLine($"--Budget: {Budget} billion QUID");
+            sb.Append("--Forces: ");
             if (Army.Count <= 0)
             {
                 sb.AppendLine("No units");
             }
             else
             {
-                sb.AppendLine(String.Join(", ", Army));
+                int counter = 0;
+                foreach (var force in units.Models)
+                {
+                    if (counter == units.Models.Count - 1)
+                    {
+                        sb.AppendLine(force.GetType().Name);
+                    }
+                    else
+                    {
+                        sb.Append($"{force.GetType().Name}, ");
+                    }
+                    counter++;
+                }
             }
 
+            sb.Append("--Combat equipment: ");
             if (Weapons.Count <= 0)
             {
                 sb.AppendLine("No weapons");
             }
             else
             {
-                sb.AppendLine(String.Join(", ", Weapons));
+                int counter = 0;
+                foreach (var weapon in weapons.Models)
+                {
+                    if (counter == weapons.Models.Count - 1)
+                    {
+                        sb.AppendLine(weapon.GetType().Name);
+                    }
+                    else
+                    {
+                        sb.Append($"{weapon.GetType().Name}, ");
+                    }
+                    counter++;
+                }
             }
-            sb.AppendLine($"--Military Power: {MilitaryPower}");
+            sb.Append($"--Military Power: {MilitaryPower}");
             return sb.ToString().TrimEnd();
         }
 
@@ -130,30 +149,18 @@ namespace PlanetWars.Models.Planets
 
         private double CalculateMilitaryPower()
         {
-            double totalSum = 0;
-            foreach (var unit in units.Models)
+            double result = this.units.Models.Sum(x => x.EnduranceLevel) + this.weapons.Models.Sum(x => x.DestructionLevel);
+
+            if (this.units.Models.Any(x => x.GetType().Name == nameof(AnonymousImpactUnit)))
             {
-                totalSum += unit.EnduranceLevel;
+                result *= 1.3;
+            }
+            if (this.weapons.Models.Any(x => x.GetType().Name == nameof(NuclearWeapon)))
+            {
+                result *= 1.45;
             }
 
-            foreach (var weapon in weapons.Models)
-            {
-                totalSum += weapon.DestructionLevel;
-            }
-
-            if (units.Models.Any(x => x.GetType().Name == "AnonymousImpactUnit"))
-            {
-                double increasedAmount = totalSum * 0.30;
-                totalSum += increasedAmount;
-            }
-
-            if (weapons.Models.Any(x => x.GetType().Name == "NuclearWeapon"))
-            {
-                double increasedAmount = totalSum * 0.45;
-                totalSum += increasedAmount;
-            }
-
-            return Math.Round(totalSum, 3);
+            return result;
         }
     }
 }
