@@ -1,10 +1,6 @@
 ﻿using EDriveRent.Models.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EDriveRent.Utilities.Messages;
+using System;
 
 namespace EDriveRent.Models
 {
@@ -12,17 +8,16 @@ namespace EDriveRent.Models
     {
         private string firstName;
         private string lastName;
-        private string drivingLicenceNumber;
+        private string drivingLicenseNumber;
 
-        public User(string firstName, string lastName, string drivingLicenceNumber)
+        public User(string firstName, string lastName, string drivingLicenseNumber)
         {
             FirstName = firstName;
             LastName = lastName;
-            DrivingLicenseNumber = drivingLicenceNumber;
+            DrivingLicenseNumber = drivingLicenseNumber;
             Rating = 0;
             IsBlocked = false;
         }
-
         public string FirstName
         {
             get => firstName;
@@ -30,7 +25,7 @@ namespace EDriveRent.Models
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentNullException(ExceptionMessages.FirstNameNull);
+                    throw new ArgumentException(String.Format(ExceptionMessages.FirstNameNull));
                 }
                 firstName = value;
             }
@@ -43,7 +38,7 @@ namespace EDriveRent.Models
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentNullException(ExceptionMessages.LastNameNull);
+                    throw new ArgumentException(String.Format(ExceptionMessages.LastNameNull));
                 }
                 lastName = value;
             }
@@ -53,14 +48,14 @@ namespace EDriveRent.Models
 
         public string DrivingLicenseNumber
         {
-            get => drivingLicenceNumber;
+            get => drivingLicenseNumber;
             private set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentNullException(ExceptionMessages.LicenceNumberRequired);
+                    throw new ArgumentException(String.Format(ExceptionMessages.DrivingLicenseRequired));
                 }
-                drivingLicenceNumber = value;
+                drivingLicenseNumber = value;
             }
         }
 
@@ -68,9 +63,9 @@ namespace EDriveRent.Models
 
         public void DecreaseRating()
         {
-            Rating -= 2;
+            Rating -= 2.0;
 
-            if (Rating < 0.0)
+            if (Rating < 0)
             {
                 Rating = 0;
                 IsBlocked = true;
@@ -81,9 +76,9 @@ namespace EDriveRent.Models
         {
             Rating += 0.5;
 
-            if (Rating > 10)
+            if (Rating > 10.0)
             {
-                Rating = 10;
+                Rating = 10.0;
             }
         }
 

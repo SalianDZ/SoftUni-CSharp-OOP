@@ -1,10 +1,6 @@
 ﻿using EDriveRent.Models.Contracts;
 using EDriveRent.Utilities.Messages;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EDriveRent.Models
 {
@@ -22,6 +18,7 @@ namespace EDriveRent.Models
             RouteId = routeId;
             IsLocked = false;
         }
+
         public string StartPoint
         {
             get => startPoint;
@@ -29,7 +26,7 @@ namespace EDriveRent.Models
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentNullException(ExceptionMessages.StartPointNull);
+                    throw new ArgumentException(String.Format(ExceptionMessages.StartPointNull));
                 }
                 startPoint = value;
             }
@@ -42,7 +39,7 @@ namespace EDriveRent.Models
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentNullException(ExceptionMessages.EndPointNull);
+                    throw new ArgumentException(String.Format(ExceptionMessages.EndPointNull));
                 }
                 endPoint = value;
             }
@@ -55,7 +52,7 @@ namespace EDriveRent.Models
             {
                 if (value < 1)
                 {
-                    throw new ArgumentNullException(ExceptionMessages.RouteLengthLessThanOne);
+                    throw new ArgumentException(String.Format(ExceptionMessages.RouteLengthLessThanOne));
                 }
                 length = value;
             }

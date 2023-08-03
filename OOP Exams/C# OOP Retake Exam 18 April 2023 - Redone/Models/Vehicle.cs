@@ -1,10 +1,6 @@
 ﻿using EDriveRent.Models.Contracts;
 using EDriveRent.Utilities.Messages;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EDriveRent.Models
 {
@@ -30,7 +26,7 @@ namespace EDriveRent.Models
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentNullException(ExceptionMessages.BrandNull);
+                    throw new ArgumentException(String.Format(ExceptionMessages.BrandNull));
                 }
                 brand = value;
             }
@@ -43,11 +39,12 @@ namespace EDriveRent.Models
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentNullException(ExceptionMessages.ModelNull);
+                    throw new ArgumentException(String.Format(ExceptionMessages.ModelNull));
                 }
                 model = value;
             }
         }
+
         public double MaxMileage { get; private set; }
 
         public string LicensePlateNumber
@@ -57,13 +54,13 @@ namespace EDriveRent.Models
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentNullException(ExceptionMessages.LicenceNumberRequired);
+                    throw new ArgumentException(String.Format(ExceptionMessages.LicenceNumberRequired));
                 }
                 licensePlateNumber = value;
             }
         }
 
-        public int BatteryLevel { get;private set; }
+        public int BatteryLevel { get; private set; }
 
         public bool IsDamaged { get; private set; }
 
@@ -81,12 +78,12 @@ namespace EDriveRent.Models
 
         public void Drive(double mileage)
         {
-            double percentage = Math.Round((mileage / MaxMileage) * 100);
-
+            double percentage = Math.Round((mileage / MaxMileage) * 100.0);
             if (GetType().Name == "CargoVan")
             {
                 percentage += 5;
             }
+
             BatteryLevel -= (int) percentage;
         }
 
