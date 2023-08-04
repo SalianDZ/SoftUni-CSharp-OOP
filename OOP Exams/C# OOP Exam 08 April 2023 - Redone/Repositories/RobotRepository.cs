@@ -11,7 +11,6 @@ namespace RobotService.Repositories
     public class RobotRepository : IRepository<IRobot>
     {
         private List<IRobot> robots = new();
-
         public void AddNew(IRobot model)
         {
             robots.Add(model);
@@ -19,28 +18,14 @@ namespace RobotService.Repositories
 
         public IRobot FindByStandard(int interfaceStandard)
         {
-            if (robots.Any(x => x.InterfaceStandards.Contains(interfaceStandard)))
-            {
-                return robots.First(x => x.InterfaceStandards.Contains(interfaceStandard));
-            }
-
-            return null;
+            return robots.FirstOrDefault(x => x.InterfaceStandards.Contains(interfaceStandard));
         }
 
-        public IReadOnlyCollection<IRobot> Models()
-        {
-            return robots.AsReadOnly();
-        }
+        public IReadOnlyCollection<IRobot> Models() => robots.AsReadOnly();
 
         public bool RemoveByName(string typeName)
         {
-            if (robots.Any(x => x.Model == typeName))
-            {
-                robots.Remove(robots.First(x => x.Model == typeName));
-                return true;
-            }
-
-            return false;
+            return robots.Remove(robots.FirstOrDefault(x => x.Model == typeName)); // this can cause errors
         }
     }
 }

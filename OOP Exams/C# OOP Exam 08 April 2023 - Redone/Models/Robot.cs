@@ -1,12 +1,8 @@
 ﻿using RobotService.Models.Contracts;
+using RobotService.Utilities.Messages;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using RobotService.Utilities.Messages;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
 
 namespace RobotService.Models
 {
@@ -16,14 +12,13 @@ namespace RobotService.Models
         private int batteryCapacity;
         private List<int> interfaceStandards;
 
-
-        public Robot(string model, int batteryCapacity, int conversionCapacityIndex)
+        protected Robot(string model, int batteryCapacity, int conversionCapacityIndex)
         {
             Model = model;
             BatteryCapacity = batteryCapacity;
             ConvertionCapacityIndex = conversionCapacityIndex;
-            BatteryLevel = batteryCapacity;
             interfaceStandards = new List<int>();
+            BatteryLevel = BatteryCapacity;
         }
 
         public string Model
@@ -31,11 +26,10 @@ namespace RobotService.Models
             get => model;
             private set
             {
-                if (string.IsNullOrWhiteSpace(value))
+                if (String.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException(ExceptionMessages.ModelNullOrWhitespace);
+                    throw new ArgumentException(String.Format(ExceptionMessages.ModelNullOrWhitespace));
                 }
-
                 model = value;
             }
         }
@@ -47,9 +41,8 @@ namespace RobotService.Models
             {
                 if (value < 0)
                 {
-                    throw new ArgumentException(ExceptionMessages.BatteryCapacityBelowZero);
+                    throw new ArgumentException(String.Format(ExceptionMessages.BatteryCapacityBelowZero));
                 }
-
                 batteryCapacity = value;
             }
         }
@@ -58,16 +51,13 @@ namespace RobotService.Models
 
         public int ConvertionCapacityIndex { get; private set; }
 
-        public IReadOnlyCollection<int> InterfaceStandards
-        {
-            get => interfaceStandards;
-        }
+        public IReadOnlyCollection<int> InterfaceStandards => interfaceStandards.AsReadOnly();
 
         public void Eating(int minutes)
         {
-            int energy = ConvertionCapacityIndex * minutes;
+            int result = minutes * ConvertionCapacityIndex;
 
-            BatteryLevel += energy;
+            BatteryLevel += result;
 
             if (BatteryLevel > BatteryCapacity)
             {
@@ -82,7 +72,10 @@ namespace RobotService.Models
                 BatteryLevel -= consumedEnergy;
                 return true;
             }
-            return false;
+            else
+            {
+                return false;
+            }
         }
 
         public void InstallSupplement(ISupplement supplement)
@@ -98,14 +91,14 @@ namespace RobotService.Models
             sb.AppendLine($"{GetType().Name} {Model}:");
             sb.AppendLine($"--Maximum battery capacity: {BatteryCapacity}");
             sb.AppendLine($"--Current battery level: {BatteryLevel}");
-
-            if (InterfaceStandards.Count <= 0)
+            
+            if (interfaceStandards.Count > 0)
             {
-                sb.AppendLine($"--Supplements installed: none");
+                sb.AppendLine($"--Supplements installed: {string.Join(" ", interfaceStandards)}");
             }
             else
             {
-                sb.AppendLine($"--Supplements installed: {string.Join(" ", InterfaceStandards)}");
+                sb.AppendLine("--Supplements installed: none");
             }
 
             return sb.ToString().TrimEnd();
